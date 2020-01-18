@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { Link } from 'react-router-dom';
@@ -59,12 +59,25 @@ const HomePage = function(props) {
   const [highlight, setHighlight] = useState();
 
   const {
-    data: { mapControls },
+    loading: loadingMapControls,
+    data: mapControlsData,
   } = useQuery(GET_MAP_CONTROLS);
 
+  let mapControls = {};
+  if (!loadingMapControls) {
+    mapControls = mapControlsData.mapControls;
+  }
+  console.log("map controls: ", mapControls);
+
   const {
-    data: { userData },
+    loading: loadingUserData,
+    data: userDataData,
   } = useQuery(GET_AUTH_STATUS);
+
+  let userData = {};
+  if (!loadingUserData) {
+    userData = userDataData.userData;
+  }
 
   const [logoutMutation] = useMutation(LOGOUT);
   const logout = () =>
@@ -75,6 +88,7 @@ const HomePage = function(props) {
       ...mapControls.center,
       radius: config.nearestRadius,
     },
+    skip: loadingMapControls,
   });
 
   const [mutateToggleViewMode] = useMutation(TOGGLE_VIEW_MODE);
@@ -152,6 +166,10 @@ const HomePage = function(props) {
   };
 
   const renderMain = () => {
+    if (loadingMapControls || loadingUserData) {
+      return <></>;
+      }
+
     var { viewMap } = mapControls;
 
     return (

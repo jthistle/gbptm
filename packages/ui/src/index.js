@@ -52,6 +52,7 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  gql
 } from '@apollo/client';
 
 import { setContext } from 'apollo-link-context';
@@ -144,26 +145,46 @@ const client = new ApolloClient({
 let isAuthed = auth.isAuthenticated();
 const initialState = {
   mapControls: {
-    __typename: 'MapControls',
+    viewMap: true, // whether to view a map or list
     zoom: 16,
     center: {
-      __typename: 'Point',
       lat: 0,
       lng: 0,
     },
-    viewMap: true, // whether to view a map or list
   },
   userData: {
-    __typename: 'UserData',
     loggedIn: isAuthed,
     name: isAuthed ? auth.getProfile().name : null,
   },
 };
 
-const initialize = () =>
+const initialize = () => {
   cache.writeData({
     data: initialState,
   });
+
+  //DEBUG
+  console.log('Initialized');
+  const query = gql`
+    query allInitialState {
+      mapControls @client {
+        zoom
+        center {
+          lat
+          lng
+        }
+        viewMap
+      }
+      userData @client {
+        loggedIn
+        name
+      }
+    }
+  `;
+
+  const res = cache.readQuery({ query });
+  console.log('initial state: ',res);
+};
 
 initialize();
 
