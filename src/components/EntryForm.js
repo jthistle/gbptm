@@ -90,6 +90,7 @@ const EntryForm = ({
             className={controls.text}
             defaultValue={loo.name === null ? '' : loo.name}
             data-testid="toilet-name"
+            onChange={e => props.onChange(e.target.name, e.target.value)}
           />
         </label>
 
