@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import MediaQuery from 'react-responsive';
 import { useForm } from 'react-hook-form';
@@ -29,6 +29,7 @@ const EntryForm = ({
   ...props
 }) => {
   const { register, handleSubmit, formState } = useForm();
+  const [formData, setFormData] = useState({});
 
   // read the formState before render to subscribe the form state through Proxy
   const { dirtyFields } = formState;
@@ -88,9 +89,14 @@ const EntryForm = ({
             name="name"
             type="text"
             className={controls.text}
-            defaultValue={loo.name === null ? '' : loo.name}
+            value={formData.name || ''}
             data-testid="toilet-name"
-            onChange={e => props.onChange(e.target.name, e.target.value)}
+            onChange={e => {
+              setFormData({
+                ...formData,
+                'name': e.target.value,
+              });
+            }}
           />
         </label>
 

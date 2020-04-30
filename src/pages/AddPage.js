@@ -42,7 +42,6 @@ const AddPage = (props) => {
   const optionsMap = graphqlMappings.looProps.definitions;
 
   const [mapPosition, setMapPosition] = useMapPosition();
-  const [formData, setFormData] = useState(getInitialFormState());
 
   const { data } = useNearbyLoos({
     lat: mapPosition.center.lat,
@@ -105,8 +104,7 @@ const AddPage = (props) => {
   const MainFragment = () => (
     <EntryForm
       map={<MapFragment />}
-      // loo={getInitialFormState()}
-      loo={formData}
+      loo={getInitialFormState()}
       center={mapPosition.center}
       questionnaireMap={questionnaireMap}
       saveLoading={saveLoading}
@@ -114,12 +112,6 @@ const AddPage = (props) => {
       saveError={saveError}
       optionsMap={optionsMap}
       onSubmit={save}
-      onChange={(name, value) => {
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-      }}
     >
       <input
         type="submit"
